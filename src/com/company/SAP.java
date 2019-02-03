@@ -45,29 +45,33 @@ public class SAP {
         queueV.enqueue(v);
         queueW.enqueue(w);
 
-        while (!queueV.isEmpty() && !queueW.isEmpty()) {
+        while (!queueV.isEmpty() || !queueW.isEmpty()) {
 
-            Integer toProcessV = queueV.dequeue();
-            for (Integer integer : digraph.adj(toProcessV)) {
-                if (markedW.contains(integer)) {
-                  return distanceW.get(integer) + distanceV.get(toProcessV) + 1;
-                } else if (!markedV.contains(integer)) {
-                    queueV.enqueue(integer);
-                    edgeFromV.put(integer, toProcessV);
-                    distanceV.put(integer, distanceV.get(toProcessV) + 1);
-                    markedV.add(integer);
+            if (!queueV.isEmpty()) {
+                Integer toProcessV = queueV.dequeue();
+                for (Integer integer : digraph.adj(toProcessV)) {
+                    if (markedW.contains(integer)) {
+                      return distanceW.get(integer) + distanceV.get(toProcessV) + 1;
+                    } else if (!markedV.contains(integer)) {
+                        queueV.enqueue(integer);
+                        edgeFromV.put(integer, toProcessV);
+                        distanceV.put(integer, distanceV.get(toProcessV) + 1);
+                        markedV.add(integer);
+                    }
                 }
             }
 
-            Integer toProcessW = queueW.dequeue();
-            for (Integer integer : digraph.adj(toProcessW)) {
-                if (markedV.contains(integer)) {
-                    return distanceV.get(integer) + distanceW.get(toProcessW) + 1;
-                } else if (!markedW.contains(integer)) {
-                    queueW.enqueue(integer);
-                    edgeFromW.put(integer, toProcessW);
-                    distanceW.put(integer, distanceW.get(toProcessW) + 1);
-                    markedW.add(integer);
+            if (!queueW.isEmpty()) {
+                Integer toProcessW = queueW.dequeue();
+                for (Integer integer : digraph.adj(toProcessW)) {
+                    if (markedV.contains(integer)) {
+                        return distanceV.get(integer) + distanceW.get(toProcessW) + 1;
+                    } else if (!markedW.contains(integer)) {
+                        queueW.enqueue(integer);
+                        edgeFromW.put(integer, toProcessW);
+                        distanceW.put(integer, distanceW.get(toProcessW) + 1);
+                        markedW.add(integer);
+                    }
                 }
             }
         }
@@ -99,29 +103,33 @@ public class SAP {
         queueV.enqueue(v);
         queueW.enqueue(w);
 
-        while (!queueV.isEmpty() && !queueW.isEmpty()) {
+        while (!queueV.isEmpty() || !queueW.isEmpty()) {
 
-            Integer toProcessV = queueV.dequeue();
-            for (Integer integer : digraph.adj(toProcessV)) {
-                if (markedW.contains(integer)) {
-                    return integer;
-                } else if (!markedV.contains(integer)) {
-                    queueV.enqueue(integer);
-                    edgeFromV.put(integer, toProcessV);
-                    distanceV.put(integer, distanceV.get(toProcessV) + 1);
-                    markedV.add(integer);
+            if (!queueV.isEmpty()) {
+                Integer toProcessV = queueV.dequeue();
+                for (Integer integer : digraph.adj(toProcessV)) {
+                    if (markedW.contains(integer)) {
+                        return integer;
+                    } else if (!markedV.contains(integer)) {
+                        queueV.enqueue(integer);
+                        edgeFromV.put(integer, toProcessV);
+                        distanceV.put(integer, distanceV.get(toProcessV) + 1);
+                        markedV.add(integer);
+                    }
                 }
             }
 
-            Integer toProcessW = queueW.dequeue();
-            for (Integer integer : digraph.adj(toProcessW)) {
-                if (markedV.contains(integer)) {
-                    return integer;
-                } else if (!markedW.contains(integer)) {
-                    queueW.enqueue(integer);
-                    edgeFromW.put(integer, toProcessW);
-                    distanceW.put(integer, distanceW.get(toProcessW) + 1);
-                    markedW.add(integer);
+            if (!queueW.isEmpty()) {
+                Integer toProcessW = queueW.dequeue();
+                for (Integer integer : digraph.adj(toProcessW)) {
+                    if (markedV.contains(integer)) {
+                        return integer;
+                    } else if (!markedW.contains(integer)) {
+                        queueW.enqueue(integer);
+                        edgeFromW.put(integer, toProcessW);
+                        distanceW.put(integer, distanceW.get(toProcessW) + 1);
+                        markedW.add(integer);
+                    }
                 }
             }
         }
@@ -156,7 +164,7 @@ public class SAP {
             if (integer == null) {
                 throw new IllegalArgumentException();
             }
-            if (markedV.contains(w)) {
+            if (markedV.contains(integer)) {
                 return 0;
             }
             distanceW.put(integer, 0);
@@ -164,28 +172,32 @@ public class SAP {
             queueW.enqueue(integer);
         }
 
-        while (!queueV.isEmpty() && !queueW.isEmpty()) {
-            Integer toProcessV = queueV.dequeue();
-            for (Integer integer : digraph.adj(toProcessV)) {
-                if (markedW.contains(integer)) {
-                    return distanceW.get(integer) + distanceV.get(toProcessV) + 1;
-                } else if (!markedV.contains(integer)) {
-                    queueV.enqueue(integer);
-                    edgeFromV.put(integer, toProcessV);
-                    distanceV.put(integer, distanceV.get(toProcessV) + 1);
-                    markedV.add(integer);
+        while (!queueV.isEmpty() || !queueW.isEmpty()) {
+            if (!queueV.isEmpty()) {
+                Integer toProcessV = queueV.dequeue();
+                for (Integer integer : digraph.adj(toProcessV)) {
+                    if (markedW.contains(integer)) {
+                        return distanceW.get(integer) + distanceV.get(toProcessV) + 1;
+                    } else if (!markedV.contains(integer)) {
+                        queueV.enqueue(integer);
+                        edgeFromV.put(integer, toProcessV);
+                        distanceV.put(integer, distanceV.get(toProcessV) + 1);
+                        markedV.add(integer);
+                    }
                 }
             }
 
-            Integer toProcessW = queueW.dequeue();
-            for (Integer integer : digraph.adj(toProcessW)) {
-                if (markedV.contains(integer)) {
-                    return distanceV.get(integer) + distanceW.get(toProcessW) + 1;
-                } else if (!markedW.contains(integer)) {
-                    queueW.enqueue(integer);
-                    edgeFromW.put(integer, toProcessW);
-                    distanceW.put(integer, distanceW.get(toProcessW) + 1);
-                    markedW.add(integer);
+            if (!queueW.isEmpty()) {
+                Integer toProcessW = queueW.dequeue();
+                for (Integer integer : digraph.adj(toProcessW)) {
+                    if (markedV.contains(integer)) {
+                        return distanceV.get(integer) + distanceW.get(toProcessW) + 1;
+                    } else if (!markedW.contains(integer)) {
+                        queueW.enqueue(integer);
+                        edgeFromW.put(integer, toProcessW);
+                        distanceW.put(integer, distanceW.get(toProcessW) + 1);
+                        markedW.add(integer);
+                    }
                 }
             }
         }
@@ -228,29 +240,33 @@ public class SAP {
             queueW.enqueue(integer);
         }
 
-        while (!queueV.isEmpty() && !queueW.isEmpty()) {
+        while (!queueV.isEmpty() || !queueW.isEmpty()) {
 
-            Integer toProcessV = queueV.dequeue();
-            for (Integer integer : digraph.adj(toProcessV)) {
-                if (markedW.contains(integer)) {
-                    return integer;
-                } else if (!markedV.contains(integer)) {
-                    queueV.enqueue(integer);
-                    edgeFromV.put(integer, toProcessV);
-                    distanceV.put(integer, distanceV.get(toProcessV) + 1);
-                    markedV.add(integer);
+            if (!queueV.isEmpty()) {
+                Integer toProcessV = queueV.dequeue();
+                for (Integer integer : digraph.adj(toProcessV)) {
+                    if (markedW.contains(integer)) {
+                        return integer;
+                    } else if (!markedV.contains(integer)) {
+                        queueV.enqueue(integer);
+                        edgeFromV.put(integer, toProcessV);
+                        distanceV.put(integer, distanceV.get(toProcessV) + 1);
+                        markedV.add(integer);
+                    }
                 }
             }
 
-            Integer toProcessW = queueW.dequeue();
-            for (Integer integer : digraph.adj(toProcessW)) {
-                if (markedV.contains(integer)) {
-                    return integer;
-                } else if (!markedW.contains(integer)) {
-                    queueW.enqueue(integer);
-                    edgeFromW.put(integer, toProcessW);
-                    distanceW.put(integer, distanceW.get(toProcessW) + 1);
-                    markedW.add(integer);
+            if (!queueW.isEmpty()) {
+                Integer toProcessW = queueW.dequeue();
+                for (Integer integer : digraph.adj(toProcessW)) {
+                    if (markedV.contains(integer)) {
+                        return integer;
+                    } else if (!markedW.contains(integer)) {
+                        queueW.enqueue(integer);
+                        edgeFromW.put(integer, toProcessW);
+                        distanceW.put(integer, distanceW.get(toProcessW) + 1);
+                        markedW.add(integer);
+                    }
                 }
             }
         }
