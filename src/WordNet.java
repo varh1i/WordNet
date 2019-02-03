@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,14 +12,13 @@ public class WordNet {
 
     private Map<String, Set<Integer>> words;
     private Map<Integer, String> verticesString;
-    private SAP sap;
-    private Integer root;
+    private final SAP sap;
+    private int root;
 
     public WordNet(String synsets, String hypernyms) {
         if (synsets == null || hypernyms == null) {
             throw new IllegalArgumentException();
         }
-        // nouns = new HashSet<>();
         addVertices(synsets);
         Digraph digraph = addEdges(hypernyms);
         this.sap = new SAP(digraph);
@@ -28,8 +28,8 @@ public class WordNet {
         this.words = new HashMap<>();
         this.verticesString = new HashMap<>();
         In in = new In(synsets);
-        String line;
-        while ((line = in.readLine()) != null) {
+        String line = in.readLine();
+        while (line != null) {
             String[] fields = line.split(",");
             Set<String> synset = new HashSet<>(Arrays.asList(fields[1].split(" ")));
             for (String s : synset) {
@@ -38,6 +38,7 @@ public class WordNet {
                 this.words.put(s, vertices);
             }
             this.verticesString.put(Integer.valueOf(fields[0]), fields[1]);
+            line = in.readLine();
         }
     }
 
@@ -45,9 +46,9 @@ public class WordNet {
         Digraph digraph = new Digraph(verticesString.size());
 
         In in = new In(hypernyms);
-        String line;
-        while ((line = in.readLine()) != null) {
-            int indexOf = line.indexOf(",");
+        String line = in.readLine();
+        while (line != null) {
+            int indexOf = line.indexOf(',');
             if (indexOf != -1) {
                 int edgeFrom = Integer.valueOf(line.substring(0, indexOf));
                 String[] edgesTo = line.substring(indexOf + 1).split(",");
@@ -56,19 +57,15 @@ public class WordNet {
                 }
 
             } else {
-                if (this.root == null) {
-                    this.root = Integer.valueOf(line);
-                    System.out.println("ROOT: " + this.root);
-                } else {
-                    throw new IllegalArgumentException("More than one root");
-                }
+                this.root = Integer.valueOf(line);
             }
+            line = in.readLine();
         }
         return digraph;
     }
 
     public Iterable<String> nouns() {
-        return new HashSet(words.keySet());
+        return new ArrayList<>(words.keySet());
     }
 
     public boolean isNoun(String word) {
@@ -88,7 +85,7 @@ public class WordNet {
         }
         Set<Integer> v = words.get(nounA);
         Set<Integer> w = words.get(nounB);
-        return sap.length(v,w);
+        return sap.length(v, w);
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
