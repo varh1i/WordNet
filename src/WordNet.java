@@ -1,6 +1,5 @@
 package com.company;
 
-import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
 
@@ -16,7 +15,6 @@ public class WordNet {
     private Map<Integer, String> verticesString;
     private SAP sap;
     private Integer root;
-    private static Digraph digraph;
 
     public WordNet(String synsets, String hypernyms) {
         if (synsets == null || hypernyms == null) {
@@ -24,7 +22,7 @@ public class WordNet {
         }
         // nouns = new HashSet<>();
         addVertices(synsets);
-        this.digraph = addEdges(hypernyms);
+        Digraph digraph = addEdges(hypernyms);
         this.sap = new SAP(digraph);
     }
 
@@ -115,9 +113,6 @@ public class WordNet {
         System.out.println("Started: " + System.currentTimeMillis());
         WordNet wordNet = new WordNet("resources/synsets.txt", "resources/hypernyms.txt");
 
-        BreadthFirstDirectedPaths breadthFirstDirectedPaths
-                = new BreadthFirstDirectedPaths(digraph, 23559);
-        breadthFirstDirectedPaths.hasPathTo(38003);
         // int distance = wordNet.distance("white_marlin", "mileage");
         // System.out.println("DISTANCE:" + distance);
 
