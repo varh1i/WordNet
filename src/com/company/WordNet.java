@@ -13,7 +13,8 @@ public class WordNet {
 
     private Set<String> nouns;
     private Map<Integer, Set<String>> vertices;
-    private Digraph digraph;
+    // private Map<String, Set<Integer>> vertices;
+    private SAP sap;
     private Integer root;
 
     public WordNet(String synsets, String hypernyms) {
@@ -22,32 +23,8 @@ public class WordNet {
         }
         nouns = new HashSet<>();
         addVertices(synsets);
-        addEdges(hypernyms);
-    }
-
-    private void addEdges(String hypernyms) {
-        this.digraph = new Digraph(vertices.size());
-
-        In in = new In(hypernyms);
-        String line;
-        while ((line = in.readLine()) != null) {
-            int indexOf = line.indexOf(",");
-            if (indexOf != -1) {
-                int edgeFrom = Integer.valueOf(line.substring(0, indexOf));
-                String[] edgesTo = line.substring(indexOf + 1).split(",");
-                for (String to : edgesTo) {
-                    this.digraph.addEdge(edgeFrom, Integer.valueOf(to));
-                }
-
-            } else {
-                if (this.root == null) {
-                    this.root = Integer.valueOf(line);
-                    System.out.println("ROOT: " + this.root);
-                } else {
-                    throw new IllegalArgumentException("More than one root");
-                }
-            }
-        }
+        Digraph digraph = addEdges(hypernyms);
+        this.sap = new SAP(digraph);
     }
 
     private void addVertices(String synsets) {
@@ -59,9 +36,33 @@ public class WordNet {
             Set<String> synset = new HashSet<>(Arrays.asList(fields[1].split(" ")));
             nouns.addAll(synset);
             this.vertices.put(Integer.valueOf(fields[0]), synset);
-
-
         }
+    }
+
+    private Digraph addEdges(String hypernyms) {
+        Digraph digraph = new Digraph(vertices.size());
+
+        In in = new In(hypernyms);
+        String line;
+        while ((line = in.readLine()) != null) {
+            int indexOf = line.indexOf(",");
+            if (indexOf != -1) {
+                int edgeFrom = Integer.valueOf(line.substring(0, indexOf));
+                String[] edgesTo = line.substring(indexOf + 1).split(",");
+                for (String to : edgesTo) {
+                    digraph.addEdge(edgeFrom, Integer.valueOf(to));
+                }
+
+            } else {
+                if (this.root == null) {
+                    this.root = Integer.valueOf(line);
+                    System.out.println("ROOT: " + this.root);
+                } else {
+                    throw new IllegalArgumentException("More than one root");
+                }
+            }
+        }
+        return digraph;
     }
 
     public Iterable<String> nouns() {
