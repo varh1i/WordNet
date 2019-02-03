@@ -11,9 +11,8 @@ import java.util.Set;
 
 public class WordNet {
 
-    private Set<String> nouns;
-    private Map<Integer, Set<String>> vertices;
-    // private Map<String, Set<Integer>> vertices;
+    private Map<String, Set<Integer>> vertices;
+    private Map<Integer, String> verticesString;
     private SAP sap;
     private Integer root;
 
@@ -21,7 +20,7 @@ public class WordNet {
         if (synsets == null || hypernyms == null) {
             throw new IllegalArgumentException();
         }
-        nouns = new HashSet<>();
+        // nouns = new HashSet<>();
         addVertices(synsets);
         Digraph digraph = addEdges(hypernyms);
         this.sap = new SAP(digraph);
@@ -29,13 +28,18 @@ public class WordNet {
 
     private void addVertices(String synsets) {
         this.vertices = new HashMap<>();
+        this.verticesString = new HashMap<>();
         In in = new In(synsets);
         String line;
         while ((line = in.readLine()) != null) {
             String[] fields = line.split(",");
             Set<String> synset = new HashSet<>(Arrays.asList(fields[1].split(" ")));
-            nouns.addAll(synset);
-            this.vertices.put(Integer.valueOf(fields[0]), synset);
+            for (String s : synset) {
+                Set<Integer> vertices = this.vertices.getOrDefault(s, new HashSet<>());
+                vertices.add(Integer.valueOf(fields[0]));
+                this.vertices.put(s, vertices);
+            }
+            this.verticesString.put(Integer.valueOf(fields[0]), fields[1]);
         }
     }
 
@@ -66,14 +70,14 @@ public class WordNet {
     }
 
     public Iterable<String> nouns() {
-        return new HashSet(nouns);
+        return new HashSet(vertices.keySet());
     }
 
     public boolean isNoun(String word) {
         if (word == null) {
             throw new IllegalArgumentException();
         }
-        return nouns.contains(word);
+        return vertices.keySet().contains(word);
     }
 
     // distance between nounA and nounB (defined below)
@@ -81,7 +85,12 @@ public class WordNet {
         if (nounA == null || nounB == null) {
             throw new IllegalArgumentException();
         }
-        return 0;
+        if (!isNoun(nounA) || !isNoun(nounB)) {
+            throw new IllegalArgumentException();
+        }
+        Set<Integer> v = vertices.get(nounA);
+        Set<Integer> w = vertices.get(nounB);
+        return sap.length(v,w);
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
@@ -90,13 +99,31 @@ public class WordNet {
         if (nounA == null || nounB == null) {
             throw new IllegalArgumentException();
         }
-        return null;
+        if (!isNoun(nounA) || !isNoun(nounB)) {
+            throw new IllegalArgumentException();
+        }
+        Set<Integer> v = vertices.get(nounA);
+        Set<Integer> w = vertices.get(nounB);
+        int ancestor = sap.ancestor(v, w);
+        return this.verticesString.get(ancestor);
     }
 
     // do unit testing of this class
     public static void main(String[] args) {
         System.out.println("Started: " + System.currentTimeMillis());
         WordNet wordNet = new WordNet("resources/synsets.txt", "resources/hypernyms.txt");
+
+        // int distance = wordNet.distance("white_marlin", "mileage");
+        // System.out.println("DISTANCE:" + distance);
+
+        // int distance = wordNet.distance("worm", "bird");
+        // String sap = wordNet.sap("worm", "bird");
+
+        int distance = wordNet.distance("individual", "edible_fruit");
+        String sap = wordNet.sap("individual", "edible_fruit");
+
+        System.out.println("SAP: " + sap + ", distance:" + distance);
+
         System.out.println("Finished: " + System.currentTimeMillis());
     }
 }

@@ -14,11 +14,17 @@ public class SAP {
     private Digraph digraph;
 
     public SAP(Digraph G) {
+        if (G == null) {
+            throw new IllegalArgumentException();
+        }
         this.digraph = new Digraph(G);
     }
 
     // length of shortest ancestral path between v and w; -1 if no such path
     public int length(int v, int w) {
+        if (v < 0 || v >= digraph.V() || w < 0 || w >= digraph.V()) {
+            throw new IllegalArgumentException();
+        }
         if (v == w) {
             return 0;
         }
@@ -70,6 +76,9 @@ public class SAP {
 
     // a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path
     public int ancestor(int v, int w) {
+        if (v < 0 || v >= digraph.V() || w < 0 || w >= digraph.V()) {
+            throw new IllegalArgumentException();
+        }
         if (v == w) {
             return w;
         }
@@ -121,6 +130,10 @@ public class SAP {
 
     // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
     public int length(Iterable<Integer> v, Iterable<Integer> w) {
+        if (v == null || w == null) {
+            throw new IllegalArgumentException();
+        }
+
         HashMap<Integer, Integer> edgeFromV = new HashMap<>();
         HashMap<Integer, Integer> edgeFromW = new HashMap<>();
 
@@ -128,6 +141,9 @@ public class SAP {
         HashMap<Integer, Integer> distanceV = new HashMap<>();
         Queue<Integer> queueV = new Queue<>();
         for (Integer integer : v) {
+            if (integer == null) {
+                throw new IllegalArgumentException();
+            }
             markedV.add(integer);
             distanceV.put(integer, 0);
             queueV.enqueue(integer);
@@ -137,6 +153,9 @@ public class SAP {
         HashMap<Integer, Integer> distanceW = new HashMap<>();
         Queue<Integer> queueW = new Queue<>();
         for (Integer integer : w) {
+            if (integer == null) {
+                throw new IllegalArgumentException();
+            }
             if (markedV.contains(w)) {
                 return 0;
             }
@@ -175,6 +194,10 @@ public class SAP {
 
     // a common ancestor that participates in shortest ancestral path; -1 if no such path
     public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
+        if (v == null || w == null) {
+            throw new IllegalArgumentException();
+        }
+
         HashMap<Integer, Integer> edgeFromV = new HashMap<>();
         HashMap<Integer, Integer> edgeFromW = new HashMap<>();
 
@@ -182,6 +205,9 @@ public class SAP {
         HashMap<Integer, Integer> distanceV = new HashMap<>();
         Queue<Integer> queueV = new Queue<>();
         for (Integer integer : v) {
+            if (integer == null) {
+                throw new IllegalArgumentException();
+            }
             markedV.add(integer);
             distanceV.put(integer, 0);
             queueV.enqueue(integer);
@@ -191,6 +217,9 @@ public class SAP {
         HashMap<Integer, Integer> distanceW = new HashMap<>();
         Queue<Integer> queueW = new Queue<>();
         for (Integer integer : w) {
+            if (integer == null) {
+                throw new IllegalArgumentException();
+            }
             if (markedV.contains(w)) {
                 return integer;
             }
