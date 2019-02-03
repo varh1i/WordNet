@@ -174,7 +174,7 @@ public class SAP {
         digraph.addEdge(5, 0);
         int v = 1;
         int w = 5;
-        */
+
         Digraph digraph = new Digraph(25);
         digraph.addEdge(13, 7);
         digraph.addEdge(14, 7);
@@ -207,6 +207,6 @@ public class SAP {
         SAP sap = new SAP(digraph);
         System.out.println(sap.length(v,w));
         System.out.println(sap.ancestor(v,w));
-
+        */
     }
 }
