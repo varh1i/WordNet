@@ -1,5 +1,3 @@
-package com.company;
-
 public class Outcast {
 
     private WordNet wordNet;
