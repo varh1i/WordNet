@@ -53,32 +53,50 @@ public class SAP {
             queueW.enqueue(integer);
         }
 
+        int shortestLength = Integer.MAX_VALUE;
+        boolean found = false;
         while (!queueV.isEmpty() || !queueW.isEmpty()) {
-            if (!queueV.isEmpty()) {
+
+            Queue<Integer> adj = new Queue<>();
+            while (!queueV.isEmpty()) {
                 int toProcessV = queueV.dequeue();
                 for (int integer : digraph.adj(toProcessV)) {
                     if (markedW.contains(integer)) {
-                        return distanceW.get(integer) + distanceV.get(toProcessV) + 1;
+                        int length = distanceW.get(integer) + distanceV.get(toProcessV) + 1;
+                        if (length < shortestLength) {
+                            shortestLength = length;
+                            found = true;
+                        }
                     } else if (!markedV.contains(integer)) {
-                        queueV.enqueue(integer);
+                        adj.enqueue(integer);
                         distanceV.put(integer, distanceV.get(toProcessV) + 1);
                         markedV.add(integer);
                     }
                 }
             }
+            queueV = adj;
 
-            if (!queueW.isEmpty()) {
+            adj = new Queue<>();
+            while (!queueW.isEmpty()) {
                 int toProcessW = queueW.dequeue();
                 for (int integer : digraph.adj(toProcessW)) {
                     if (markedV.contains(integer)) {
-                        return distanceV.get(integer) + distanceW.get(toProcessW) + 1;
+                        int length = distanceV.get(integer) + distanceW.get(toProcessW) + 1;
+                        if (length < shortestLength) {
+                            shortestLength = length;
+                            found = true;
+                        }
                     } else if (!markedW.contains(integer)) {
-                        queueW.enqueue(integer);
+                        adj.enqueue(integer);
                         distanceW.put(integer, distanceW.get(toProcessW) + 1);
                         markedW.add(integer);
                     }
                 }
             }
+            queueW = adj;
+        }
+        if (found) {
+            return shortestLength;
         }
         return -1;
     }
@@ -134,32 +152,53 @@ public class SAP {
             queueW.enqueue(integer);
         }
 
+        int shortestLength = Integer.MAX_VALUE;
+        int shortestAncestor = -1;
+        boolean found = false;
         while (!queueV.isEmpty() || !queueW.isEmpty()) {
 
-            if (!queueV.isEmpty()) {
+            Queue<Integer> adj = new Queue<>();
+            while (!queueV.isEmpty()) {
                 int toProcessV = queueV.dequeue();
                 for (int integer : digraph.adj(toProcessV)) {
                     if (markedW.contains(integer)) {
-                        return integer;
+                        int length = distanceW.get(integer) + distanceV.get(toProcessV) + 1;
+                        if (length < shortestLength) {
+                            shortestLength = length;
+                            shortestAncestor = integer;
+                            found = true;
+                        }
                     } else if (!markedV.contains(integer)) {
-                        queueV.enqueue(integer);
+                        adj.enqueue(integer);
                         distanceV.put(integer, distanceV.get(toProcessV) + 1);
                         markedV.add(integer);
                     }
                 }
             }
+            queueV = adj;
 
-            if (!queueW.isEmpty()) {
+            adj = new Queue<>();
+            while (!queueW.isEmpty()) {
                 int toProcessW = queueW.dequeue();
                 for (int integer : digraph.adj(toProcessW)) {
                     if (markedV.contains(integer)) {
-                        return integer;
+                        int length = distanceV.get(integer) + distanceW.get(toProcessW) + 1;
+                        if (length < shortestLength) {
+                            shortestLength = length;
+                            shortestAncestor = integer;
+                            found = true;
+                        }
                     } else if (!markedW.contains(integer)) {
-                        queueW.enqueue(integer);
+                        adj.enqueue(integer);
                         distanceW.put(integer, distanceW.get(toProcessW) + 1);
                         markedW.add(integer);
                     }
                 }
+            }
+            queueW = adj;
+
+            if (found) {
+                return shortestAncestor;
             }
         }
         return -1;
@@ -255,8 +294,8 @@ public class SAP {
         digraph.addEdge(0, 8);
 
         SAP sap = new SAP(digraph);
-        System.out.println(sap.length(3,3));
-        System.out.println(sap.ancestor(3,3));
+        System.out.println(sap.length(4,1));
+        System.out.println(sap.ancestor(4,1));
         */
     }
 }
