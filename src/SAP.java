@@ -1,24 +1,22 @@
 import edu.princeton.cs.algs4.Digraph;
-import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class SAP {
 
     private final Digraph digraph;
+    private final int verticesSize;
 
     public SAP(Digraph G) {
         if (G == null) {
             throw new IllegalArgumentException();
         }
         this.digraph = new Digraph(G);
+        this.verticesSize = this.digraph.V();
     }
 
     // length of shortest ancestral path between v and w; -1 if no such path
@@ -89,6 +87,26 @@ public class SAP {
         if (v == null || w == null) {
             throw new IllegalArgumentException();
         }
+        for (Integer integer : v) {
+            if (integer == null) {
+                throw new IllegalArgumentException();
+            } else {
+                validate(integer);
+            }
+        }
+        for (Integer integer : w) {
+            if (integer == null) {
+                throw new IllegalArgumentException();
+            } else {
+                validate(integer);
+            }
+        }
+    }
+
+    private void validate(int v) {
+        if (v < 0 || v >= verticesSize) {
+            throw new IllegalArgumentException();
+        }
     }
 
     // a common ancestor that participates in shortest ancestral path; -1 if no such path
@@ -108,7 +126,7 @@ public class SAP {
         HashMap<Integer, Integer> distanceW = new HashMap<>();
         Queue<Integer> queueW = new Queue<>();
         for (int integer : w) {
-            if (markedV.contains(w)) {
+            if (markedV.contains(integer)) {
                 return integer;
             }
             distanceW.put(integer, 0);
@@ -207,6 +225,38 @@ public class SAP {
         SAP sap = new SAP(digraph);
         System.out.println(sap.length(v,w));
         System.out.println(sap.ancestor(v,w));
+
+
+        // digraph1.txt
+        Digraph digraph = new Digraph(13);
+        digraph.addEdge(7, 3);
+        digraph.addEdge(8, 3);
+        digraph.addEdge(3, 1);
+        digraph.addEdge(4, 1);
+        digraph.addEdge(5, 1);
+        digraph.addEdge(9, 5);
+        digraph.addEdge(10, 5);
+        digraph.addEdge(11, 10);
+        digraph.addEdge(12, 10);
+        digraph.addEdge(1, 0);
+        digraph.addEdge(2, 0);
+
+        //digraph4.txt
+        Digraph digraph = new Digraph(10);
+        digraph.addEdge(1, 2);
+        digraph.addEdge(1, 7);
+        digraph.addEdge(2, 3);
+        digraph.addEdge(3, 4);
+        digraph.addEdge(4, 5);
+        digraph.addEdge(5, 6);
+        digraph.addEdge(7, 8);
+        digraph.addEdge(9, 0);
+        digraph.addEdge(8, 6);
+        digraph.addEdge(0, 8);
+
+        SAP sap = new SAP(digraph);
+        System.out.println(sap.length(3,3));
+        System.out.println(sap.ancestor(3,3));
         */
     }
 }

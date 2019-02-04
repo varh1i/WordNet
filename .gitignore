@@ -1,4 +1,6 @@
+testfile
 .lift
 .idea
 out
 *iml
+src/*zip
